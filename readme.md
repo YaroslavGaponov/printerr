@@ -4,6 +4,8 @@ PrintErr
 print information about the place where the error occurred
 
 
+![printerr](https://raw.githubusercontent.com/YaroslavGaponov/printerr/master/printerr.jpg "printerr")
+
 ### Example
 
 ```javascript
