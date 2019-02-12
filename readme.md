@@ -7,7 +7,7 @@ print information about the place where the error occurred
 ### Example
 
 ```javascript
-const printErr = require('printerr');
+const printErr = require('printerr')();
 
 try {
     throw new Error('error!!!');
@@ -19,7 +19,7 @@ try {
 ### Result
 
 ```sh
-[gap@localhost errinfo]$ node ./example.js 
+$ node ./example.js 
 Error: /home/gap/projects/errinfo/example.js:4
 ...
 try {

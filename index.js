@@ -1,21 +1,42 @@
+const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
+
 const regex = /\([^:]+:[\d]+:[\d]+\)/gm;
 
-function printErr(e) {
-    const result = regex.exec(e.stack);
-    if (result !== null) {
-        const [file, line] = result[0].substr(1, result[0].length - 2).split(':');
-        const code = fs.readFileSync(file, 'utf8').split(os.EOL);
-        code[+line - 1] = `\x1b[31m${code[+line - 1]}\x1b[0m <----- ${e}`;
-        const info = [
-            `Error: ${file}:${line}`,
-            '...',
-            ...code.splice(+line - 2, 3),
-            '...',
-        ];
-        console.log(info.join(os.EOL));
-    }
+function init(print = console.log) {
+    assert(print);
+    assert(print instanceof Function);
+
+    return function printErr(e, lines = 3) {
+        assert(e);
+        assert(e instanceof Error);
+        assert(!Number.isNaN(lines));
+        assert(lines > 0);
+
+        let m;
+        while ((m = regex.exec(e.stack)) !== null) {
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+
+            m.forEach(point => {
+                const [file, line] = point.substr(1, point.length - 2).split(':');
+                if (fs.existsSync(file)) {
+                    const lineNo = +line - 1;
+                    const program = fs.readFileSync(file, 'utf8').split(os.EOL);
+                    program[lineNo] = `\x1b[42m${program[lineNo]}\x1b[0m <----- \x1b[31m${e}\x1b[0m`;
+                    const message = [
+                        `Error: ${file}:${line}`,
+                        '...',
+                        ...program.map((s, i) => `${i+1}\t${s}`).splice(Math.max(lineNo - (lines >> 1), 0), Math.min(program.length, lines)),
+                        '...',
+                    ];
+                    print(message.join(os.EOL));
+                }
+            });
+        }
+    };
 }
 
-module.exports = printErr;
+module.exports = fn => init(fn);
