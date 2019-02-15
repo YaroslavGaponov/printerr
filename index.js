@@ -8,7 +8,7 @@ function init(print = console.log) {
     assert(print);
     assert(print instanceof Function);
 
-    return function printErr(e, lines = 3) {
+    return function(e, lines = 3) {
         assert(e);
         assert(e instanceof Error);
         assert(!Number.isNaN(lines));
@@ -39,4 +39,11 @@ function init(print = console.log) {
     };
 }
 
-module.exports = fn => init(fn);
+let printErr;
+
+module.exports = fn => {
+    if (printErr) return printErr;
+    printErr = init(fn);
+    process.on('uncaughtException', printErr);
+    return printErr;
+};

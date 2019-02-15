@@ -1,6 +1,6 @@
 {
   "name": "printerr",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "print information about the place where the error occurred",
   "main": "index.js",
   "scripts": {

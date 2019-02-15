@@ -6,7 +6,20 @@ print information about the place where the error occurred
 
 ![printerr](https://raw.githubusercontent.com/YaroslavGaponov/printerr/master/printerr.jpg "printerr")
 
-### Example
+
+## Example #1
+
+Print information for all uncaughtException
+
+```javascript
+require('./index')();
+
+throw new Error('error!!!');
+```
+
+### Example #2
+
+Print information for custom exception
 
 ```javascript
 const printErr = require('printerr')();
@@ -18,14 +31,10 @@ try {
 }
 ```
 
-### Result
+### Example with custom print function
 
-```sh
-$ node ./example.js 
-Error: /home/gap/projects/errinfo/example.js:4
-...
-try {
-    throw new Error('error!!!'); <----- Error: error!!!
-} catch (e) {
-...
+```javascript
+require('./index')(console.debug);
+
+throw new Error('error!!!');
 ```
